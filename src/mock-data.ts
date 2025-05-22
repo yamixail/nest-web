@@ -87,3 +87,12 @@ export const products = [
     catalogId: 5,
   },
 ];
+
+// Mock function to simulate getting the next catalog ID
+// In a real application, this would be handled by a database
+let lastCatalogId = 5;
+
+export function getNextCatalogId() {
+  lastCatalogId += 1;
+  return lastCatalogId;
+}
