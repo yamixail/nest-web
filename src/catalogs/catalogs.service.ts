@@ -1,5 +1,10 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { catalogs, getNextCatalogId } from "../mock-data";
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  ConflictException,
+} from "@nestjs/common";
+import { catalogs, products, getNextCatalogId } from "../mock-data";
 import { CreateCatalogDto } from "./dto/create-catalog.dto";
 import { UpdateCatalogDto } from "./dto/update-catalog.dto";
 
@@ -20,6 +25,14 @@ export class CatalogsService {
   }
 
   create(body: CreateCatalogDto) {
+    if (
+      catalogs.some((c) => c.name.toLowerCase() === body.name.toLowerCase())
+    ) {
+      throw new ConflictException(
+        `Catalog with name "${body.name}" already exists`,
+      );
+    }
+
     const newCatalog = { id: getNextCatalogId(), name: body.name };
 
     catalogs.push(newCatalog);
@@ -34,7 +47,16 @@ export class CatalogsService {
       throw new NotFoundException(`Catalog with id ${id} not found`);
     }
 
-    // Replace the whole object except id (which comes from URL)
+    if (
+      catalogs.some(
+        (c) => c.name.toLowerCase() === body.name.toLowerCase() && c.id !== id,
+      )
+    ) {
+      throw new ConflictException(
+        `Catalog with name "${body.name}" already exists`,
+      );
+    }
+
     catalogs[index] = { ...body, id };
 
     return catalogs[index];
@@ -45,6 +67,13 @@ export class CatalogsService {
 
     if (index === -1) {
       throw new NotFoundException(`Catalog with id ${id} not found`);
+    }
+
+    // Prevent deleting a catalog if products are assigned to it
+    if (products.some((p) => p.catalogId === id)) {
+      throw new BadRequestException(
+        "Cannot delete catalog with assigned products",
+      );
     }
 
     const [removed] = catalogs.splice(index, 1);

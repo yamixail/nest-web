@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from "@nestjs/common";
 import { products, catalogs, getNextProductId } from "../mock-data";
 import { CreateProductDto } from "./dto/create-product.dto";
 import { UpdateProductDto } from "./dto/update-product.dto";
@@ -32,6 +36,18 @@ export class ProductsService {
       );
     }
 
+    if (
+      products.some(
+        (p) =>
+          p.catalogId === body.catalogId &&
+          p.name.toLowerCase() === body.name.toLowerCase(),
+      )
+    ) {
+      throw new ConflictException(
+        `Product with name "${body.name}" already exists in this catalog`,
+      );
+    }
+
     const newProduct = { ...body, id: getNextProductId() };
 
     products.push(newProduct);
@@ -51,6 +67,19 @@ export class ProductsService {
     if (!catalog) {
       throw new NotFoundException(
         `Catalog with id ${body.catalogId} not found`,
+      );
+    }
+
+    if (
+      products.some(
+        (p) =>
+          p.catalogId === body.catalogId &&
+          p.name.toLowerCase() === body.name.toLowerCase() &&
+          p.id !== id,
+      )
+    ) {
+      throw new ConflictException(
+        `Product with name "${body.name}" already exists in this catalog`,
       );
     }
 
