@@ -1,9 +1,7 @@
-import {
-  Injectable,
-  NotFoundException,
-  BadRequestException,
-} from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { catalogs, getNextCatalogId } from "../mock-data";
+import { CreateCatalogDto } from "./dto/create-catalog.dto";
+import { UpdateCatalogDto } from "./dto/update-catalog.dto";
 
 @Injectable()
 export class CatalogsService {
@@ -21,11 +19,7 @@ export class CatalogsService {
     return catalog;
   }
 
-  create(body: { name: string }) {
-    if (!body.name || typeof body.name !== "string") {
-      throw new BadRequestException("Catalog name is required");
-    }
-
+  create(body: CreateCatalogDto) {
     const newCatalog = { id: getNextCatalogId(), name: body.name };
 
     catalogs.push(newCatalog);
@@ -33,20 +27,17 @@ export class CatalogsService {
     return newCatalog;
   }
 
-  update(id: number, body: { name: string }) {
-    const catalog = catalogs.find((c) => c.id === id);
+  update(id: number, body: UpdateCatalogDto) {
+    const index = catalogs.findIndex((c) => c.id === id);
 
-    if (!catalog) {
+    if (index === -1) {
       throw new NotFoundException(`Catalog with id ${id} not found`);
     }
 
-    if (!body.name || typeof body.name !== "string") {
-      throw new BadRequestException("Catalog name is required");
-    }
+    // Replace the whole object except id (which comes from URL)
+    catalogs[index] = { ...body, id };
 
-    catalog.name = body.name;
-
-    return catalog;
+    return catalogs[index];
   }
 
   remove(id: number) {

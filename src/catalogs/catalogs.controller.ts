@@ -9,6 +9,8 @@ import {
   Delete,
 } from "@nestjs/common";
 import { CatalogsService } from "./catalogs.service";
+import { CreateCatalogDto } from "./dto/create-catalog.dto";
+import { UpdateCatalogDto } from "./dto/update-catalog.dto";
 
 @Controller("catalogs")
 export class CatalogsController {
@@ -25,14 +27,14 @@ export class CatalogsController {
   }
 
   @Post()
-  create(@Body() body: { name: string }) {
+  create(@Body() body: CreateCatalogDto) {
     return this.catalogsService.create(body);
   }
 
   @Put(":id")
   update(
     @Param("id", ParseIntPipe) id: number,
-    @Body() body: { name: string },
+    @Body() body: UpdateCatalogDto,
   ) {
     return this.catalogsService.update(id, body);
   }
