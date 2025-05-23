@@ -2,8 +2,6 @@
 
 A simple NestJS REST API for managing catalogs and products, fully documented with Swagger.
 
----
-
 ## Features
 
 - CRUD for **Catalogs** and **Products**
@@ -13,8 +11,6 @@ A simple NestJS REST API for managing catalogs and products, fully documented wi
 - Full Swagger/OpenAPI documentation at `/swagger`
 - Clear error responses with schemas
 
----
-
 ## Getting Started
 
 ### 1. **Install dependencies**
@@ -23,7 +19,7 @@ A simple NestJS REST API for managing catalogs and products, fully documented wi
 $ npm install
 ```
 
-## 2. Compile and run the project
+### 2. Compile and run the project
 
 ```bash
 # development
@@ -36,7 +32,7 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-## 3. Run tests
+### 3. Run tests
 
 ```bash
 # unit tests
