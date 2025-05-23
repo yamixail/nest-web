@@ -1,4 +1,17 @@
-export const catalogs = [
+export interface Catalog {
+  id: number;
+  name: string;
+}
+
+export interface Product {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  catalogId: number;
+}
+
+export const catalogs: Catalog[] = [
   { id: 1, name: "Keyboards" },
   { id: 2, name: "Mice" },
   { id: 3, name: "Cables" },
@@ -6,7 +19,7 @@ export const catalogs = [
   { id: 5, name: "Headphones" },
 ];
 
-export const products = [
+export const products: Product[] = [
   // Keyboards
   {
     id: 1,
@@ -88,11 +101,17 @@ export const products = [
   },
 ];
 
-// Mock function to simulate getting the next catalog ID
+// Mock function to simulate getting a next ID
 // In a real application, this would be handled by a database
 let lastCatalogId = 5;
+let lastProductId = 10;
 
 export function getNextCatalogId() {
   lastCatalogId += 1;
   return lastCatalogId;
+}
+
+export function getNextProductId() {
+  lastProductId += 1;
+  return lastProductId;
 }
